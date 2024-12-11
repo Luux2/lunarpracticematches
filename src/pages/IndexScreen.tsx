@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
+import {Button, Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/react";
 import {MatchInterface, PlayerInterface} from "../utils/interfaces.ts";
 import PlayerService from "../services/PlayerService.tsx";
 import RoundService from "../services/RoundService.tsx";
 import {format} from "date-fns";
+import {useNavigate} from "react-router-dom";
 
 const IndexScreen = () => {
+    const navigate = useNavigate();
     const [players, setPlayers] = useState<PlayerInterface[]>([]);
     const [selectedPlayers, setSelectedPlayers] = useState<(PlayerInterface | null)[]>(Array(24).fill(null));
     const today = format(new Date().toISOString().split("T")[0], "dd-MM-yyyy");
@@ -63,6 +65,10 @@ const IndexScreen = () => {
         }
     };
 
+    const handleSeeRounds = () => {
+        navigate("/rounds");
+    }
+
 
 
 
@@ -70,6 +76,11 @@ const IndexScreen = () => {
     return (
         <>
             <div className="mt-4">
+                <div className="flex justify-end">
+                <Button onClick={handleSeeRounds} className="animate-pulse bg-red-500 text-white p-2 rounded-md">
+                    Se runder
+                </Button>
+                </div>
             {Array.from({ length: 6 }).map((_, groupIndex) => (
                 <div key={groupIndex} className="mb-10">
                     <h2 className="text-2xl font-bold text-center text-white mb-4">

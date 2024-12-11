@@ -39,7 +39,7 @@ const RoundsScreen = () => {
             <ul>
                 {rounds.map((round) => (
                     <li key={round.id}>
-                        <h2 className="mb-10">{round.id}</h2>
+                        <h2 className="mt-10">{round.id}</h2>
                         <ul>
                             {round.matches.map((match) => (
                                 match.id && (
