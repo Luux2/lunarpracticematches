@@ -5,6 +5,8 @@ import PlayerService from "../services/PlayerService.tsx";
 import { useNavigate } from "react-router-dom";
 import BackArrow from "../components/BackArrow.tsx";
 import {ChevronRightIcon} from "@heroicons/react/24/outline";
+import {format, parse} from "date-fns";
+import {da} from "date-fns/locale";
 
 const RoundsScreen = () => {
     const [rounds, setRounds] = useState<RoundInterface[]>([]);
@@ -61,7 +63,7 @@ const RoundsScreen = () => {
                     <li key={round.id} className="border-b-2 pb-4 my-4" onClick={() => toggleRound(round.id)}>
                         <div className="flex justify-between">
                         <div className="ml-2 text-lg font-semibold cursor-pointer">
-                            {round.id}
+                            {format(parse(round.id, "dd-MM-yyyy", new Date()), "eeee, dd. MMMM", {locale: da})}
                         </div>
                             <ChevronRightIcon className={`h-6 mr-2 cursor-pointer transition-transform ${
                                 expandedRounds.has(round.id) ? "rotate-90" : ""
