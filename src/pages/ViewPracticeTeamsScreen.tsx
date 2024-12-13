@@ -87,7 +87,7 @@ const ViewPracticeTeamsScreen = () => {
                         onClick={() => toggleDate(date)}
                     >
                         <div className="flex justify-between items-center">
-                            <div className="ml-2 text-lg font-semibold cursor-pointer">{format(date, "eeee, dd. MMMM", {locale: da})}</div>
+                            <div className="ml-2 text-lg font-semibold cursor-pointer">{date}</div>
                             <ChevronRightIcon
                                 className={`h-6 mr-2 cursor-pointer transition-transform duration-300 ${expandedDates.has(date) ? "rotate-90" : ""}`}
                             />

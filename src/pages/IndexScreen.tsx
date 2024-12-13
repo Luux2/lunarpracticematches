@@ -22,7 +22,7 @@ const IndexScreen = () => {
     }
 
     return (
-        <div className="flex items-center justify-center mt-56">
+        <div className="flex items-center justify-center mt-28">
             <div className="flex flex-col space-y-10 text-center w-64">
                 <h1 className="text-4xl font-semibold">Lunar træningsapp</h1>
                 <Button className="bg-green-500 rounded-3xl py-2 font-semibold" onClick={handleCreateMatches}>Opret kampe</Button>
