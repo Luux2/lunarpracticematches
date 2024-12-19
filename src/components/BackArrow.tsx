@@ -11,7 +11,7 @@ const BackArrow = () => {
 
     return (
         <>
-            <div className="m-1 h-8 w-8 shrink-0 rounded-full p-1 border bg-[#4e4e4e]">
+            <div className="ml-3 mt-5 h-8 w-8 shrink-0 rounded-full p-1 border bg-[#4e4e4e]">
                 <ArrowLongLeftIcon className="h-full w-full rounded-full text-white" onClick={handleNavigateBack}/>
             </div>
 

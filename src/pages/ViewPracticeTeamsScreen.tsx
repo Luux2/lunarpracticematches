@@ -86,7 +86,7 @@ const ViewPracticeTeamsScreen = () => {
     return (
         <div>
             <BackArrow />
-            <h1 className="text-3xl mt-10 text-center font-semibold">Træningshold</h1>
+            <h1 className="text-3xl text-center font-semibold">Privat time</h1>
             <ul>
                 {Object.keys(groupedTeams)
                     .sort((a, b) =>

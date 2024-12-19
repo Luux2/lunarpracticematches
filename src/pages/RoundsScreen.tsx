@@ -51,11 +51,11 @@ const RoundsScreen = () => {
     return (
         <div>
             <BackArrow />
-            <h1 className="text-3xl mt-10 text-center font-semibold">Dagens kampe</h1>
+            <h1 className="text-3xl text-center font-semibold">Dagens kampe</h1>
             <ul>
                 {rounds.map((round) => (
                     <li key={round.id} className="border-b-2 pb-4 my-4">
-                        <div className="ml-2 text-lg font-semibold">
+                        <div className="ml-4 text-lg font-semibold">
                             {format(parse(round.id, "dd-MM-yyyy", new Date()), "eeee, dd. MMMM", {
                                 locale: da,
                             })}

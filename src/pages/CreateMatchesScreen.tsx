@@ -77,14 +77,14 @@ const CreateMatchesScreen = () => {
 
 
     return (
-        <div className="mt-4">
+        <>
             <BackArrow />
             {Array.from({ length: 12 }).map((_, groupIndex) => (
                 <div key={groupIndex} className="mb-10">
                     <h2 className="text-2xl font-semibold text-center mb-4">
                         Kamp {groupIndex + 1}
                     </h2>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4 mx-1">
                         {Array.from({ length: 4 }).map((_, index) => {
                             const globalIndex = groupIndex * 4 + index;
                             return (
@@ -129,7 +129,7 @@ const CreateMatchesScreen = () => {
                     Bekræft valg
                 </button>
             </div>
-        </div>
+        </>
     );
 };
 

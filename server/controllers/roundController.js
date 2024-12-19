@@ -34,8 +34,6 @@ const getRounds = async (req, res) => {
                     })),
                 }))
                 : [];
-
-            console.log("Sending Data to Frontend:", roundsArray); // Debug log
             res.json(roundsArray);
         });
     } catch (error) {
