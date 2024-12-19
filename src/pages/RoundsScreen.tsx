@@ -66,7 +66,7 @@ const RoundsScreen = () => {
                                     match.id && (
                                         <li
                                             key={match.id}
-                                            className="mb-4 p-2 cursor-pointer hover:bg-gray-700 border-2 border-[#232e39] rounded-xl"
+                                            className="mb-4 p-2 border-2 border-[#232e39] rounded-xl"
                                         >
                                             <p>
                                                 {getPlayerName(match.team1.player1)} & {" "}
