@@ -59,8 +59,9 @@ const PracticeTeamsScreen = () => {
 
             await PracticeTeamService.createPracticeTeams(newPracticeTeam);
 
-            alert("Træningshold oprettet med succes!");
+            alert("Træningshold oprettet!");
             setSelectedPlayers(Array(4).fill(null));
+            setSelectedDate(null);
         } catch (error) {
             console.error("Fejl ved oprettelse af træningshold:", error);
             alert("Der opstod en fejl ved oprettelse af træningshold.");
@@ -105,7 +106,7 @@ const PracticeTeamsScreen = () => {
                             handlePlayerSelection(index, selectedPlayer)
                         }
                     >
-                        <div className="relative border-2 rounded-lg border-sky-500">
+                        <div className="relative border-2 rounded-lg border-[#232e39] mx-2">
                             <ListboxButton className="w-full h-16 text-center bg-white text-black rounded-md px-2 py-1">
                                 {selectedPlayers[index]?.name || "Vælg spiller"}
                             </ListboxButton>
@@ -132,7 +133,7 @@ const PracticeTeamsScreen = () => {
 
             <div className="flex justify-center mt-10">
                 <button
-                    className="rounded-2xl bg-sky-500 p-2 text-3xl text-white mb-52"
+                    className="rounded-xl p-2 text-3xl border-[#232e39] border-2 mb-52"
                     onClick={handleConfirmPracticeTeams}
                 >
                     Bekræft valg

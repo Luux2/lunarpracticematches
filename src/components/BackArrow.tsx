@@ -1,4 +1,4 @@
-import {ArrowLeftCircleIcon} from "@heroicons/react/24/outline";
+import {ArrowLongLeftIcon} from "@heroicons/react/24/outline";
 import {useNavigate} from "react-router-dom";
 
 const BackArrow = () => {
@@ -11,7 +11,10 @@ const BackArrow = () => {
 
     return (
         <>
-            <ArrowLeftCircleIcon className="h-16" onClick={handleNavigateBack}/>
+            <div className="m-1 h-8 w-8 shrink-0 rounded-full p-1 border bg-[#4e4e4e]">
+                <ArrowLongLeftIcon className="h-full w-full rounded-full text-white" onClick={handleNavigateBack}/>
+            </div>
+
         </>
     )
 }

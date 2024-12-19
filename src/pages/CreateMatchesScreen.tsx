@@ -61,7 +61,6 @@ const CreateMatchesScreen = () => {
         });
 
         try {
-            console.log("Matches:", matches);
             await RoundService.createRound(roundId, matches);
             alert(`Runde ${roundId} gemt med succes!`);
             setSelectedPlayers(Array(48).fill(null)); // Nulstil valgene
@@ -82,7 +81,7 @@ const CreateMatchesScreen = () => {
             <BackArrow />
             {Array.from({ length: 12 }).map((_, groupIndex) => (
                 <div key={groupIndex} className="mb-10">
-                    <h2 className="text-2xl font-bold text-center text-white mb-4">
+                    <h2 className="text-2xl font-semibold text-center mb-4">
                         Kamp {groupIndex + 1}
                     </h2>
                     <div className="grid grid-cols-2 gap-4">
@@ -124,7 +123,7 @@ const CreateMatchesScreen = () => {
             ))}
             <div className="flex justify-center mt-10">
                 <button
-                    className="rounded-2xl bg-sky-500 p-2 text-3xl text-white mb-52"
+                    className="rounded-xl border-2 border-[#232E39] p-2 text-3xl mb-52"
                     onClick={handleConfirmMatches}
                 >
                     Bekræft valg

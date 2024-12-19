@@ -3,7 +3,7 @@ import {PracticeTeamInterface} from "../utils/interfaces.ts";
 
 class PracticeTeamService {
 
-    static async getPracticeTeams(): Promise<PracticeTeamInterface> {
+    static async getPracticeTeams(): Promise<PracticeTeamInterface[]> {
         const response = await apiClient.get('/practice-teams');
         return response.data;
     }

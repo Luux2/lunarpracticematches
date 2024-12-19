@@ -2,23 +2,40 @@ import { PlayerInterface, RoundInterface } from "../utils/interfaces.ts";
 import { useEffect, useState } from "react";
 import RoundService from "../services/RoundService.tsx";
 import PlayerService from "../services/PlayerService.tsx";
-import { useNavigate } from "react-router-dom";
 import BackArrow from "../components/BackArrow.tsx";
 import {ChevronRightIcon} from "@heroicons/react/24/outline";
-import {format, parse} from "date-fns";
+import {format, isAfter, isToday, parse} from "date-fns";
 import {da} from "date-fns/locale";
 
 const RoundsScreen = () => {
     const [rounds, setRounds] = useState<RoundInterface[]>([]);
     const [players, setPlayers] = useState<PlayerInterface[]>([]);
     const [expandedRounds, setExpandedRounds] = useState<Set<string>>(new Set()); // Hold styr på hvilke runder der er åbne
-    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchRounds = async () => {
             const response = await RoundService.getRounds();
-            setRounds(response);
+
+            // Filtrer runder fra i dag eller frem
+            const today = new Date();
+            const filteredRounds = response.filter((round) =>
+                isToday(parse(round.id, "dd-MM-yyyy", new Date())) ||
+                isAfter(parse(round.id, "dd-MM-yyyy", new Date()), today)
+            );
+
+            // Sorter runder efter dato
+            filteredRounds.sort((a, b) =>
+                parse(a.id, "dd-MM-yyyy", new Date()).getTime() -
+                parse(b.id, "dd-MM-yyyy", new Date()).getTime()
+            );
+
+            setRounds(filteredRounds);
+
+            // Åbn den nyeste dato (første i listen)
+            if (filteredRounds.length > 0) {
+                setExpandedRounds(new Set([filteredRounds[0].id]));
+            }
         };
 
         const fetchPlayers = async () => {
@@ -34,9 +51,9 @@ const RoundsScreen = () => {
         return player ? player.name : "Ukendt spiller";
     };
 
-    const handleMatchClick = (roundId: string, matchId: string) => {
+    /*const handleMatchClick = (roundId: string, matchId: string) => {
         navigate(`/rounds/${roundId}/matches/${matchId}`);
-    };
+    };*/
 
     const toggleRound = (roundId: string) => {
         setExpandedRounds((prev) => {
@@ -57,7 +74,7 @@ const RoundsScreen = () => {
     return (
         <div>
             <BackArrow />
-            <h1 className="text-3xl mt-10 text-center font-bold">Alle runder</h1>
+            <h1 className="text-3xl mt-10 text-center font-semibold">Dagens kampe</h1>
             <ul>
                 {rounds.map((round) => (
                     <li key={round.id} className="border-b-2 pb-4 my-4" onClick={() => toggleRound(round.id)}>
@@ -79,14 +96,11 @@ const RoundsScreen = () => {
                                             <li
                                                 key={match.id}
                                                 className="mb-4 p-2 cursor-pointer hover:bg-gray-700 border-2 rounded-xl"
-                                                onClick={() =>
-                                                    handleMatchClick(round.id, match.id!)
-                                                }
                                             >
                                                 <p
                                                     className={
                                                         match.winner === "team1"
-                                                            ? "text-green-500 font-bold"
+                                                            ? "text-green-500 font-semibold"
                                                             : match.winner === "team2"
                                                                 ? "text-red-500"
                                                                 : ""
@@ -99,7 +113,7 @@ const RoundsScreen = () => {
                                                 <p
                                                     className={
                                                         match.winner === "team2"
-                                                            ? "text-green-500 font-bold"
+                                                            ? "text-green-500 font-semibold"
                                                             : match.winner === "team1"
                                                                 ? "text-red-500"
                                                                 : ""

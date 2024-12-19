@@ -9,12 +9,19 @@ const getPracticeTeams = async (req, res) => {
         const snapshot = await practiceTeamsRef.once('value');
         const practiceTeams = snapshot.val();
 
-        res.status(200).json(practiceTeams);
+        // Konverter data til et array
+        const practiceTeamsArray = practiceTeams
+            ? Object.keys(practiceTeams).map((key) => ({ id: key, ...practiceTeams[key] }))
+            : [];
+
+        // Returner det konverterede array
+        res.status(200).json(practiceTeamsArray);
     } catch (error) {
         console.error("Error fetching practice teams:", error);
         res.status(500).json({ message: "Failed to fetch practice teams" });
     }
-}
+};
+
 
 const postPracticeTeam = async (req, res) => {
     const { startTime, endTime, players } = req.body;

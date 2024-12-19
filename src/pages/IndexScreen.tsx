@@ -22,13 +22,17 @@ const IndexScreen = () => {
     }
 
     return (
-        <div className="flex items-center justify-center mt-56">
+        <div className="flex items-center justify-center h-screen">
             <div className="flex flex-col space-y-10 text-center w-64">
                 <h1 className="text-4xl font-semibold">Lunar træningsapp</h1>
-                <Button className="bg-green-500 rounded-3xl py-2 font-semibold" onClick={handleCreateMatches}>Opret kampe</Button>
-                <Button className="bg-orange-500 rounded-3xl py-2 font-semibold" onClick={handleAllRounds}>Se runder</Button>
-                <Button className="bg-yellow-500 rounded-3xl py-2 font-semibold" onClick={handleAllPracticeTeams}>Opret træningshold</Button>
-                <Button className="bg-purple-500 rounded-3xl py-2 font-semibold" onClick={handleViewPracticeTeams}>Se træningshold</Button>
+                <Button className="bg-green-500 rounded-3xl py-2 font-semibold" onClick={handleCreateMatches}>Opret
+                    kampe</Button>
+                <Button className="bg-orange-500 rounded-3xl py-2 font-semibold" onClick={handleAllRounds}>Se
+                    runder</Button>
+                <Button className="bg-yellow-500 rounded-3xl py-2 font-semibold" onClick={handleAllPracticeTeams}>Opret
+                    træningshold</Button>
+                <Button className="bg-purple-500 rounded-3xl py-2 font-semibold" onClick={handleViewPracticeTeams}>Se
+                    træningshold</Button>
             </div>
         </div>
     );
