@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+/server/lunarpractice-7feb7-firebase-adminsdk-g6hi0-9a89630a20.json
 
 # Editor directories and files
 .vscode/*
