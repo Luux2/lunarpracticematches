@@ -15,6 +15,7 @@ const RoundsScreen = () => {
         const fetchRounds = async () => {
             const response = await RoundService.getRounds();
 
+
             // Filtrer runder fra i dag eller frem
             const today = new Date();
             const filteredRounds = response.filter((round) =>
@@ -39,7 +40,7 @@ const RoundsScreen = () => {
         Promise.all([fetchRounds(), fetchPlayers()]).then(() => setIsLoading(false));
     }, []);
 
-    const getPlayerName = (id: string): string => {
+    const getPlayerName = (id: string | undefined): string => {
         const player = players.find((p) => p.id === id);
         return player ? player.name : "Ukendt spiller";
     };
@@ -52,38 +53,45 @@ const RoundsScreen = () => {
         <div>
             <BackArrow />
             <h1 className="text-3xl text-center font-semibold">Dagens kampe</h1>
-            <ul>
-                {rounds.map((round) => (
-                    <li key={round.id} className="border-b-2 pb-4 my-4">
-                        <div className="ml-4 text-lg font-semibold">
-                            {format(parse(round.id, "dd-MM-yyyy", new Date()), "eeee, dd. MMMM", {
-                                locale: da,
-                            })}
-                        </div>
-                        <ul className="mt-4 px-4">
-                            {round.matches.map(
-                                (match) =>
-                                    match.id && (
-                                        <li
-                                            key={match.id}
-                                            className="mb-4 p-2 border-2 border-[#232e39] rounded-xl"
-                                        >
-                                            <p>
-                                                {getPlayerName(match.team1.player1)} & {" "}
-                                                {getPlayerName(match.team1.player2)}
-                                            </p>
-                                            <p>vs</p>
-                                            <p>
-                                                {getPlayerName(match.team2.player1)} & {" "}
-                                                {getPlayerName(match.team2.player2)}
-                                            </p>
-                                        </li>
-                                    )
-                            )}
-                        </ul>
-                    </li>
-                ))}
-            </ul>
+            {rounds.length > 0 ? (
+                <ul>
+                    {rounds.map((round) => (
+                        <li key={round.id} className="border-b-2 pb-4 my-4">
+                            <div className="ml-4 text-lg font-semibold">
+                                {format(parse(round.id, "dd-MM-yyyy", new Date()), "eeee, dd. MMMM", {
+                                    locale: da,
+                                })}
+                            </div>
+                            <h1 className="ml-4 italic">Første navn angivet: Venstre side</h1>
+                            <h1 className="ml-4 italic">Andet navn angivet: Højre side</h1>
+                            <ul className="mt-4 px-4">
+                                {round.matches.map(
+                                    (match) =>
+                                        match.id && (
+                                            <li
+                                                key={match.id}
+                                                className="mb-4 p-2 border-2 border-[#232e39] rounded-xl"
+                                            >
+                                                <p className="font-semibold">
+                                                    {getPlayerName(match.team1.player1)} & {" "}
+                                                    {getPlayerName(match.team1.player2)}
+                                                </p>
+                                                <p>vs</p>
+                                                <p className="font-semibold">
+                                                    {getPlayerName(match.team2.player1)} & {" "}
+                                                    {getPlayerName(match.team2.player2)}
+                                                </p>
+                                                <p className="mt-2 italic">{!match.sidesFixed ? "Sider ikke fastlåst" : ""}</p>
+                                            </li>
+                                        )
+                                )}
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p className="text-center mt-10">Ingen kommende kampe sat... endnu!</p>
+            )}
         </div>
     );
 };

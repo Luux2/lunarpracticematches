@@ -6,12 +6,6 @@ export interface PlayerInterface {
 export interface TeamInterface {
     player1: string;
     player2: string;
-    setScores?: number[]; // Foretrukken struktur
-    firstSetPoints?: number; // Midlertidigt til kompatibilitet med backend
-    secondSetPoints?: number;
-    thirdSetPoints?: number;
-    left?: string;
-    right?: string;
 }
 
 
@@ -19,8 +13,7 @@ export interface MatchInterface {
     id?: string;
     team1: TeamInterface;
     team2: TeamInterface;
-    winner?: "team1" | "team2" | "not finished" | null;
-    setWinners?: ("team1" | "team2" | "draw")[]; // Vindere af hvert sæt
+    sidesFixed?: boolean;
 }
 
 export interface RoundInterface {

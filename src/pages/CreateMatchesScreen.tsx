@@ -1,17 +1,25 @@
 import { useEffect, useState } from "react";
-import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/react";
-import {MatchInterface, PlayerInterface} from "../utils/interfaces.ts";
+import {
+    Listbox,
+    ListboxButton,
+    ListboxOption,
+    ListboxOptions,
+} from "@headlessui/react";
+import {MatchInterface, PlayerInterface, TeamInterface} from "../utils/interfaces.ts";
 import PlayerService from "../services/PlayerService.tsx";
 import RoundService from "../services/RoundService.tsx";
-import {format} from "date-fns";
-import {useNavigate} from "react-router-dom";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import BackArrow from "../components/BackArrow.tsx";
 
 const CreateMatchesScreen = () => {
     const navigate = useNavigate();
     const [players, setPlayers] = useState<PlayerInterface[]>([]);
-    const [selectedPlayers, setSelectedPlayers] = useState<(PlayerInterface | null)[]>(Array(48).fill(null));
+    const [numPlayers, setNumPlayers] = useState(0); // Antal spillere valgt
+    const [numMatches, setNumMatches] = useState(0); // Antal kampe baseret på spillere
+    const [selectedPlayers, setSelectedPlayers] = useState<(PlayerInterface | null)[]>(Array(numPlayers).fill(null));
     const today = format(new Date().toISOString().split("T")[0], "dd-MM-yyyy");
+    const [sidesNotFixedMap, setSidesNotFixedMap] = useState<Record<number, boolean>>({});
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -24,46 +32,48 @@ const CreateMatchesScreen = () => {
     }, []);
 
     const handlePlayerSelection = (index: number, selectedPlayer: PlayerInterface | null) => {
-        if (!selectedPlayer) return; // Ignorer null-valg
         const updatedSelections = [...selectedPlayers];
         updatedSelections[index] = selectedPlayer;
         setSelectedPlayers(updatedSelections);
     };
 
-    const handleConfirmMatches = async () => {
-        const roundId = today;
+    const handleSidesNotFixedChange = (matchIndex: number, isChecked: boolean) => {
+        setSidesNotFixedMap((prev) => ({
+            ...prev,
+            [matchIndex]: isChecked,
+        }));
+    };
 
-        const hasIncompleteSelection = selectedPlayers.some((player) => !player?.id);
-        if (hasIncompleteSelection) {
+    const handleConfirmMatches = async () => {
+        if (selectedPlayers.some((player) => !player)) {
             alert("Alle spillere skal vælges!");
             return;
         }
 
-        const matches: MatchInterface[] = Array.from({ length: 12 }).map((_, matchIndex) => {
-            const team1 = {
+        const matches: MatchInterface[] = Array.from({ length: numMatches }).map((_, matchIndex) => {
+            const sidesNotFixed = sidesNotFixedMap[matchIndex]; // Tjek om sider ikke er fastlagt
+
+            const team1: TeamInterface = {
                 player1: selectedPlayers[matchIndex * 4]!.id as string,
                 player2: selectedPlayers[matchIndex * 4 + 1]!.id as string,
-                setScores: [0, 0, 0],
             };
 
-            const team2 = {
+            const team2: TeamInterface = {
                 player1: selectedPlayers[matchIndex * 4 + 2]!.id as string,
                 player2: selectedPlayers[matchIndex * 4 + 3]!.id as string,
-                setScores: [0, 0, 0],
             };
 
             return {
                 team1,
                 team2,
-                winner: "not finished",
-                setWinners: [],
+                sidesFixed: !sidesNotFixed,
             };
         });
 
         try {
-            await RoundService.createRound(roundId, matches);
-            alert(`Runde ${roundId} gemt med succes!`);
-            setSelectedPlayers(Array(48).fill(null)); // Nulstil valgene
+            await RoundService.createRound(today, matches);
+            alert(`Runde ${today} gemt med succes!`);
+            setSelectedPlayers(Array(numPlayers).fill(null));
             navigate("/rounds");
         } catch (error) {
             console.error("Error saving round:", error);
@@ -71,39 +81,74 @@ const CreateMatchesScreen = () => {
         }
     };
 
+
+
+    const handleSetPlayers = (playersCount: number) => {
+        setNumPlayers(playersCount);
+        setNumMatches(playersCount / 2);
+        setSelectedPlayers(Array(playersCount).fill(null));
+    };
+
     if (isLoading) {
         return <p className="text-center mt-10">Indlæser spillere...</p>;
     }
 
-
     return (
         <>
             <BackArrow />
-            {Array.from({ length: 12 }).map((_, groupIndex) => (
+            <div className="flex justify-center space-x-4 mb-10 mt-4">
+                <button
+                    className={`rounded-xl border-2 border-[#232E39] p-2 ${numPlayers === 12 ? "bg-green-500" : ""}`}
+                    onClick={() => handleSetPlayers(12)}
+                >
+                    12 spillere
+                </button>
+                <button
+                    className={`rounded-xl border-2 border-[#232E39] p-2 ${numPlayers === 16 ? "bg-green-500" : ""}`}
+                    onClick={() => handleSetPlayers(16)}
+                >
+                    16 spillere
+                </button>
+                <button
+                    className={`rounded-xl border-2 border-[#232E39] p-2 ${numPlayers === 20 ? "bg-green-500" : ""}`}
+                    onClick={() => handleSetPlayers(20)}
+                >
+                    20 spillere
+                </button>
+                <button
+                    className={`rounded-xl border-2 border-[#232E39] p-2 ${numPlayers === 24 ? "bg-green-500" : ""}`}
+                    onClick={() => handleSetPlayers(24)}
+                >
+                    24 spillere
+                </button>
+            </div>
+            {Array.from({length: numMatches}).map((_, groupIndex) => (
                 <div key={groupIndex} className="mb-10">
                     <h2 className="text-2xl font-semibold text-center mb-4">
                         Kamp {groupIndex + 1}
                     </h2>
                     <div className="grid grid-cols-2 gap-4 mx-1">
-                        {Array.from({ length: 4 }).map((_, index) => {
+                        <h1 className="text-center font-semibold">Venstre side</h1>
+                        <h1 className="text-center font-semibold">Højre side</h1>
+                        {Array.from({length: 4}).map((_, index) => {
                             const globalIndex = groupIndex * 4 + index;
                             return (
                                 <Listbox
                                     key={globalIndex}
-                                    value={selectedPlayers[globalIndex]}
-                                    onChange={(selectedPlayer) =>
-                                        handlePlayerSelection(globalIndex, selectedPlayer)
-                                    }
+                                    value={selectedPlayers[globalIndex] || null}
+                                    onChange={(selectedPlayer) => handlePlayerSelection(globalIndex, selectedPlayer)}
                                 >
                                     <div
                                         className={`relative border-4 rounded-lg ${
                                             index < 2 ? "border-blue-500" : "border-red-500"
                                         }`}
                                     >
-                                        <ListboxButton className="w-full h-20 text-center bg-white text-black rounded-md px-2 py-1">
+                                        <ListboxButton
+                                            className="w-full h-20 text-center bg-white text-black rounded-md px-2 py-1">
                                             {selectedPlayers[globalIndex]?.name || "Vælg spiller"}
                                         </ListboxButton>
-                                        <ListboxOptions className="absolute mt-1 w-full bg-white shadow-md rounded-md z-50 max-h-60 overflow-y-auto text-black">
+                                        <ListboxOptions
+                                            className="absolute mt-1 w-full bg-white shadow-md rounded-md z-50 max-h-60 overflow-y-auto text-black">
                                             {players.map((player) => (
                                                 <ListboxOption
                                                     key={player.id}
@@ -119,11 +164,22 @@ const CreateMatchesScreen = () => {
                             );
                         })}
                     </div>
+                    <div className="flex justify-center mt-4">
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="checkbox"
+                                className="h-5 w-5"
+                                onChange={(e) => handleSidesNotFixedChange(groupIndex, e.target.checked)}
+                            />
+                            <span>Sider ikke fastlagt</span>
+                        </label>
+                    </div>
+
                 </div>
             ))}
             <div className="flex justify-center mt-10">
                 <button
-                    className="rounded-xl border-2 border-[#232E39] p-2 text-3xl mb-52"
+                    className={`rounded-xl border-2 border-[#232E39] p-2 text-3xl mb-52 ${numPlayers === 0 ? "hidden" : ""}`}
                     onClick={handleConfirmMatches}
                 >
                     Bekræft valg

@@ -15,22 +15,12 @@ const getRounds = async (req, res) => {
                         team1: {
                             player1: data[key][matchKey].team1.player1,
                             player2: data[key][matchKey].team1.player2,
-                            firstSetPoints: data[key][matchKey].team1.firstSetPoints || 0,
-                            secondSetPoints: data[key][matchKey].team1.secondSetPoints || 0,
-                            thirdSetPoints: data[key][matchKey].team1.thirdSetPoints || 0,
-                            left: data[key][matchKey].team1.left, // Behold værdien fra databasen
-                            right: data[key][matchKey].team1.right, // Behold værdien fra databasen
                         },
                         team2: {
                             player1: data[key][matchKey].team2.player1,
                             player2: data[key][matchKey].team2.player2,
-                            firstSetPoints: data[key][matchKey].team2.firstSetPoints || 0,
-                            secondSetPoints: data[key][matchKey].team2.secondSetPoints || 0,
-                            thirdSetPoints: data[key][matchKey].team2.thirdSetPoints || 0,
-                            left: data[key][matchKey].team2.left, // Behold værdien fra databasen
-                            right: data[key][matchKey].team2.right, // Behold værdien fra databasen
                         },
-                        winner: data[key][matchKey].winner || "not finished",
+                        sidesFixed: data[key][matchKey].sidesFixed || false,
                     })),
                 }))
                 : [];
@@ -50,29 +40,32 @@ const postRound = async (req, res) => {
     const { matches } = req.body;
     const { date } = req.params;
 
-    if (!date || !matches || matches.length !== 12) {
-        return res.status(400).json({ message: "Invalid input data. Ensure 6 matches are provided." });
+    if (!date || !matches || !Array.isArray(matches) || matches.length === 0) {
+        return res.status(400).json({ message: "Invalid input data. Ensure matches and date are provided." });
     }
 
     try {
         const roundRef = db.ref(`/rounds/${date}`);
 
+        const removeUndefinedFields = (obj) => {
+            return Object.entries(obj).reduce((acc, [key, value]) => {
+                if (value !== undefined) {
+                    acc[key] = value;
+                }
+                return acc;
+            }, {});
+        };
+
         const formattedMatches = matches.map(match => ({
-            team1: {
+            team1: removeUndefinedFields({
                 player1: match.team1.player1,
                 player2: match.team1.player2,
-                firstSetPoints: 0,
-                secondSetPoints: 0,
-                thirdSetPoints: 0,
-            },
-            team2: {
+            }),
+            team2: removeUndefinedFields({
                 player1: match.team2.player1,
                 player2: match.team2.player2,
-                firstSetPoints: 0,
-                secondSetPoints: 0,
-                thirdSetPoints: 0,
-            },
-            winner: "not finished",
+            }),
+            sidesFixed: match.sidesFixed || false,
         }));
 
         const promises = formattedMatches.map(match => roundRef.push(match));
@@ -86,6 +79,9 @@ const postRound = async (req, res) => {
 };
 
 
+
+
+
 const updateMatchResult = async (req, res) => {
     const { roundId, matchId } = req.params;
     const { team1, team2, winner } = req.body;
@@ -96,22 +92,12 @@ const updateMatchResult = async (req, res) => {
             team1: {
                 player1: team1.player1,
                 player2: team1.player2,
-                firstSetPoints: team1.firstSetPoints,
-                secondSetPoints: team1.secondSetPoints,
-                thirdSetPoints: team1.thirdSetPoints,
-                left: team1.left,
-                right: team1.right,
             },
             team2: {
                 player1: team2.player1,
                 player2: team2.player2,
-                firstSetPoints: team2.firstSetPoints,
-                secondSetPoints: team2.secondSetPoints,
-                thirdSetPoints: team2.thirdSetPoints,
-                left: team2.left,
-                right: team2.right,
             },
-            winner: winner || "not finished",
+            sidesFixed: true,
         });
 
         res.json({ message: "Match result updated successfully" });
@@ -121,6 +107,35 @@ const updateMatchResult = async (req, res) => {
     }
 };
 
+const updateMatchTeams = async (req, res) => {
+    const { roundId, matchId } = req.params;
+    const { team1, team2 } = req.body;
+
+    console.log("Received in backend:", { roundId, matchId, team1, team2 }); // Debug-log
+
+    if (!roundId || !matchId || !team1 || !team2) {
+        return res.status(400).json({ message: "Missing required parameters or body data" });
+    }
+
+    try {
+        const matchRef = db.ref(`/rounds/${roundId}/matches/${matchId}`);
+
+        await matchRef.update({
+            team1,
+            team2,
+        });
+
+        res.json({ message: "Match teams updated successfully" });
+    } catch (error) {
+        console.error("Error updating match teams:", error);
+        res.status(500).json({ message: "Failed to update match teams" });
+    }
+};
 
 
-module.exports = { getRounds, postRound, updateMatchResult };
+
+
+
+
+
+module.exports = { getRounds, postRound, updateMatchResult, updateMatchTeams };

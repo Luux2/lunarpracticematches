@@ -87,50 +87,59 @@ const ViewPracticeTeamsScreen = () => {
         <div>
             <BackArrow />
             <h1 className="text-3xl text-center font-semibold">Privat time</h1>
-            <ul>
-                {Object.keys(groupedTeams)
-                    .sort((a, b) =>
-                        parse(a, "dd/MM/yyyy", new Date()).getTime() -
-                        parse(b, "dd/MM/yyyy", new Date()).getTime()
-                    )
-                    .map((date) => (
-                        <li
-                            key={date}
-                            className="border-b-2 pb-4 my-4"
-                            onClick={() => toggleDate(date)}
-                        >
-                            <div className="flex justify-between items-center">
-                                <div className="ml-2 text-lg font-semibold cursor-pointer">{date}</div>
-                                <ChevronRightIcon
-                                    className={`h-6 mr-2 cursor-pointer transition-transform duration-300 ${expandedDates.has(date) ? "rotate-90" : ""}`}
-                                />
-                            </div>
-                        {expandedDates.has(date) && (
-                            <ul className="mt-4 border-gray-300">
-                                {groupedTeams[date].map((team) => (
-                                    <li key={`${date}-${team.id}`} className="mb-4">
-                                        <div className="font-semibold mb-3 border-t">
-                                            <p className="p-2">{format(team.startTime, "HH:mm")} - {format(team.endTime, "HH:mm")}</p>
-                                        </div>
-                                        <ul>
-                                            {team.players.map((playerId) => (
-                                                <li
-                                                    key={playerId}
-                                                    className="mb-2 p-2 mx-1 cursor-pointer hover:bg-gray-700 border-2 border-[#232e39] rounded-xl"
-                                                >
-                                                    {getPlayerName(playerId)}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </li>
-                ))}
-            </ul>
+            {Object.keys(groupedTeams).length > 0 ? (
+                <ul>
+                    {Object.keys(groupedTeams)
+                        .sort((a, b) =>
+                            parse(a, "dd/MM/yyyy", new Date()).getTime() -
+                            parse(b, "dd/MM/yyyy", new Date()).getTime()
+                        )
+                        .map((date) => (
+                            <li
+                                key={date}
+                                className="border-b-2 pb-4 my-4"
+                                onClick={() => toggleDate(date)}
+                            >
+                                <div className="flex justify-between items-center">
+                                    <div className="ml-2 text-lg font-semibold cursor-pointer">{date}</div>
+                                    <ChevronRightIcon
+                                        className={`h-6 mr-2 cursor-pointer transition-transform duration-300 ${
+                                            expandedDates.has(date) ? "rotate-90" : ""
+                                        }`}
+                                    />
+                                </div>
+                                {expandedDates.has(date) && (
+                                    <ul className="mt-4 border-gray-300">
+                                        {groupedTeams[date].map((team) => (
+                                            <li key={`${date}-${team.id}`} className="mb-4">
+                                                <div className="font-semibold mb-3 border-t">
+                                                    <p className="p-2">
+                                                        {format(team.startTime, "HH:mm")} - {format(team.endTime, "HH:mm")}
+                                                    </p>
+                                                </div>
+                                                <ul>
+                                                    {team.players.map((playerId) => (
+                                                        <li
+                                                            key={playerId}
+                                                            className="mb-2 p-2 mx-1 cursor-pointer hover:bg-gray-700 border-2 border-[#232e39] rounded-xl"
+                                                        >
+                                                            {getPlayerName(playerId)}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
+                        ))}
+                </ul>
+            ) : (
+                <p className="text-center mt-10">Ingen kommende træningshold oprettet... endnu!</p>
+            )}
         </div>
     );
+
 };
 
 export default ViewPracticeTeamsScreen;

@@ -53,4 +53,45 @@ const postPracticeTeam = async (req, res) => {
     }
 };
 
-module.exports = {getPracticeTeams, postPracticeTeam };
+const updatePracticeTeam = async (req, res) => {
+    const { id } = req.params; // Hent teamId fra URL'en
+    const { oldPlayerId, newPlayerId } = req.body; // Hent gamle og nye spillere fra request body
+
+    if (!id || !oldPlayerId || !newPlayerId) {
+        return res.status(400).json({ message: "Manglende teamId, oldPlayerId eller newPlayerId" });
+    }
+
+    try {
+        const teamRef = db.ref(`/practice-teams/${id}`); // Reference til team i databasen
+        const snapshot = await teamRef.get();
+
+        if (!snapshot.exists()) {
+            return res.status(404).json({ message: `Hold med ID '${id}' ikke fundet` });
+        }
+
+        const teamData = snapshot.val();
+
+        // Find positionen af den gamle spiller i players-arrayet
+        const playerIndex = teamData.players.indexOf(oldPlayerId);
+
+        if (playerIndex === -1) {
+            return res.status(404).json({ message: `Spiller med ID '${oldPlayerId}' ikke fundet på holdet` });
+        }
+
+        // Erstat den gamle spiller med den nye spiller
+        teamData.players[playerIndex] = newPlayerId;
+
+        // Opdater databasen
+        await teamRef.update({ players: teamData.players });
+
+        res.status(200).json({ message: "Spiller erstattet succesfuldt", players: teamData.players });
+    } catch (error) {
+        console.error("Fejl under opdatering af hold:", error);
+        res.status(500).json({ message: "Kunne ikke opdatere holdet" });
+    }
+};
+
+
+
+
+module.exports = {getPracticeTeams, postPracticeTeam, updatePracticeTeam };

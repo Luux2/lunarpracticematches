@@ -21,6 +21,10 @@ const IndexScreen = () => {
         navigate("/view-practice-teams");
     }
 
+    const handleEdit = () => {
+        navigate("/edit");
+    }
+
     return (
         <div className="flex items-center justify-center h-screen">
             <div className="flex flex-col space-y-10 text-center w-64">
@@ -33,6 +37,7 @@ const IndexScreen = () => {
                     træningshold</Button>
                 <Button className="bg-purple-500 rounded-3xl py-2 font-semibold" onClick={handleViewPracticeTeams}>Se
                     træningshold</Button>
+                <Button className="bg-pink-500 rounded-3xl py-2 font-semibold" onClick={handleEdit}>Rediger runder og træninger (kommer snart)</Button>
             </div>
         </div>
     );
