@@ -14,8 +14,9 @@ const EditScreen = () => {
     };
 
     return (
-        <>
-        <BackArrow/>
+        <div>
+            <BackArrow/>
+
         <div className="flex items-center justify-center h-screen -mt-32">
             <div className="flex flex-col space-y-10 text-center w-64">
                 <h1 className="text-3xl text-center font-semibold">Hvad vil du redigere?</h1>
@@ -24,7 +25,7 @@ const EditScreen = () => {
                 <Button className="bg-purple-500 rounded-3xl py-2 font-semibold" onClick={handleViewPracticeTeams}>Privat time</Button>
             </div>
         </div>
-        </>
+        </div>
     );
 }
 

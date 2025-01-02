@@ -53,20 +53,20 @@ const postPracticeTeam = async (req, res) => {
     }
 };
 
-const updatePracticeTeam = async (req, res) => {
-    const { id } = req.params; // Hent teamId fra URL'en
+const patchPlayer = async (req, res) => {
+    const { teamId } = req.params; // Hent teamId fra URL'en
     const { oldPlayerId, newPlayerId } = req.body; // Hent gamle og nye spillere fra request body
 
-    if (!id || !oldPlayerId || !newPlayerId) {
+    if (!teamId || !oldPlayerId || !newPlayerId) {
         return res.status(400).json({ message: "Manglende teamId, oldPlayerId eller newPlayerId" });
     }
 
     try {
-        const teamRef = db.ref(`/practice-teams/${id}`); // Reference til team i databasen
+        const teamRef = db.ref(`/practice-teams/${teamId}`); // Reference til team i databasen
         const snapshot = await teamRef.get();
 
         if (!snapshot.exists()) {
-            return res.status(404).json({ message: `Hold med ID '${id}' ikke fundet` });
+            return res.status(404).json({ message: `Hold med ID '${teamId}' ikke fundet` });
         }
 
         const teamData = snapshot.val();
@@ -94,4 +94,4 @@ const updatePracticeTeam = async (req, res) => {
 
 
 
-module.exports = {getPracticeTeams, postPracticeTeam, updatePracticeTeam };
+module.exports = {getPracticeTeams, postPracticeTeam, patchPlayer };

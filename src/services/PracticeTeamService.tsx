@@ -12,8 +12,8 @@ class PracticeTeamService {
         await apiClient.post('/practice-teams', practiceTeams);
     }
 
-    static async updatePracticeTeam(id: string, oldPlayerId: string, newPlayerId: string): Promise<void> {
-        await apiClient.patch(`/practice-teams/${id}`, {
+    static async patchPlayer(teamId: string, oldPlayerId: string, newPlayerId: string): Promise<void> {
+        await apiClient.patch(`/practice-teams/${teamId}`, {
             oldPlayerId,
             newPlayerId,
         });

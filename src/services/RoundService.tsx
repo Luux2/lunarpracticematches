@@ -23,21 +23,6 @@ class RoundService {
     }
 
 
-    static async updateMatchResult(roundId: string, matchId: string, updatedMatch: MatchInterface): Promise<void> {
-        const formattedMatch = {
-            ...updatedMatch,
-            team1: {
-                ...updatedMatch.team1,
-            },
-            team2: {
-                ...updatedMatch.team2,
-            },
-            sidesFixed: updatedMatch.sidesFixed || false,
-        };
-
-        await apiClient.put(`/rounds/${roundId}/matches/${matchId}`, formattedMatch);
-    }
-
     static async updateMatchTeams(roundId: string, matchId: string, updatedMatch: MatchInterface): Promise<void> {
         await apiClient.put(`/rounds/${roundId}/matches/${matchId}`, updatedMatch);
     }

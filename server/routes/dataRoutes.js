@@ -12,12 +12,10 @@ router.post('/players', playerController.postPlayer);
 //Round routes
 router.get('/rounds', roundController.getRounds);
 router.post('/rounds/:date', roundController.postRound);
-router.put('/rounds/:roundId/matches/:matchId', roundController.updateMatchResult);
-router.put("/rounds/:roundId/matches/:matchId/teams", roundController.updateMatchTeams);
 
 //Practice routes
 router.get('/practice-teams', practiceController.getPracticeTeams);
 router.post('/practice-teams', practiceController.postPracticeTeam);
-router.patch('/practice-teams/:id', practiceController.updatePracticeTeam);
+router.patch('/practice-teams/:teamId', practiceController.patchPlayer);
 
 module.exports = router;

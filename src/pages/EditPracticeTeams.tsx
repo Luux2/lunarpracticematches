@@ -16,7 +16,8 @@ const EditPracticeTeams = () => {
     const [players, setPlayers] = useState<PlayerInterface[]>([]);
     const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
+    const [oldPlayerId, setOldPlayerId] = useState<string | null>(null);
+    const [newPlayerId, setNewPlayerId] = useState<string | null>(null);
     const [selectedTeam, setSelectedTeam] = useState<PracticeTeamInterface | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -69,42 +70,34 @@ const EditPracticeTeams = () => {
     }, [practiceTeams]);
 
     const openModal = (playerId: string, team: PracticeTeamInterface) => {
-        setSelectedPlayer(playerId);
+        setOldPlayerId(playerId); // Sæt spilleren, der skal erstattes
+        setNewPlayerId(playerId); // Sæt default til den valgte spiller
         setSelectedTeam(team);
         setIsModalOpen(true);
     };
 
+
     const closeModal = () => {
-        setSelectedPlayer(null);
+        setOldPlayerId(null);
+        setNewPlayerId(null);
         setSelectedTeam(null);
         setIsModalOpen(false);
     };
 
     const handlePlayerChange = (playerId: string) => {
-        setSelectedPlayer(playerId);
+        setNewPlayerId(playerId); // Sæt den nye spiller korrekt
     };
 
     const handleSavePlayerChange = async () => {
-        if (!selectedPlayer || !selectedTeam) return;
+        if (!oldPlayerId || !newPlayerId || !selectedTeam) {
+            console.error("Missing required data:", { oldPlayerId, newPlayerId, selectedTeam });
+            return;
+        }
 
         try {
-            const oldPlayerId = selectedPlayer; // Den spiller, der skal erstattes
-            const newPlayerId = availablePlayers.find((player) => player.id !== selectedPlayer)?.id; // Ny spiller
+            await PracticeTeamService.patchPlayer(selectedTeam.id!, oldPlayerId, newPlayerId);
 
-            if (!newPlayerId) {
-                console.error("Ny spiller kunne ikke findes");
-                return;
-            }
-
-            console.log("Payload sent to backend:", {
-                oldPlayerId,
-                newPlayerId,
-            });
-
-            // Send data til backend
-            await PracticeTeamService.updatePracticeTeam(selectedTeam.id!, oldPlayerId, newPlayerId);
-
-            // Opdater state lokalt
+            // Opdater UI
             setPracticeTeams((prev) =>
                 prev.map((team) =>
                     team.id === selectedTeam.id
@@ -119,19 +112,17 @@ const EditPracticeTeams = () => {
             );
 
             closeModal();
-        } catch (error) {
-            console.error("Fejl under opdatering af spiller:", error);
+        } catch {
+            console.error("Fejl under opdatering af spiller. Prøv igen");
         }
     };
 
-
-
-
-
     const availablePlayers = useMemo(() => {
-        if (!selectedTeam) return [];
-        return players.filter((player) => !selectedTeam.players.includes(player.id!));
-    }, [players, selectedTeam]);
+        if (!selectedTeam || !oldPlayerId) return [];
+        return players.filter((player) =>
+            !selectedTeam.players.includes(player.id!) && player.id !== oldPlayerId
+        );
+    }, [players, selectedTeam, oldPlayerId]);
 
     if (isLoading) {
         return <p className="text-center mt-10">Indlæser træningshold...</p>;
@@ -194,11 +185,11 @@ const EditPracticeTeams = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                         <h2 className="text-xl font-semibold mb-4">Vælg ny spiller</h2>
-                        <Listbox value={selectedPlayer} onChange={(value: string) => handlePlayerChange(value!)}>
+                        <Listbox value={newPlayerId} onChange={handlePlayerChange}>
                             {({ open }) => (
                                 <div className="relative">
                                     <ListboxButton className="w-full p-2 border rounded bg-white text-left">
-                                        {getPlayerName(selectedPlayer || "")}
+                                        {getPlayerName(newPlayerId || "")}
                                     </ListboxButton>
                                     {open && (
                                         <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto bg-white border rounded shadow-lg">
