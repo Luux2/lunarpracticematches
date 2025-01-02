@@ -24,7 +24,8 @@ const EditRounds = () => {
 
         const fetchPlayers = async () => {
             const playerResponse = await PlayerService.getPlayers();
-            setPlayers(playerResponse);
+            const sortedPlayers = playerResponse.sort((a, b) => a.name.localeCompare(b.name));
+            setPlayers(sortedPlayers);
         };
 
         Promise.all([fetchRounds(), fetchPlayers()]).then(() => setIsLoading(false));

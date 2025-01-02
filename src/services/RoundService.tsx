@@ -24,7 +24,7 @@ class RoundService {
 
 
     static async updateMatchTeams(roundId: string, matchId: string, updatedMatch: MatchInterface): Promise<void> {
-        await apiClient.put(`/rounds/${roundId}/matches/${matchId}`, updatedMatch);
+        await apiClient.patch(`/rounds/${roundId}/${matchId}`, updatedMatch);
     }
 
 }

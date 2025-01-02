@@ -12,6 +12,7 @@ router.post('/players', playerController.postPlayer);
 //Round routes
 router.get('/rounds', roundController.getRounds);
 router.post('/rounds/:date', roundController.postRound);
+router.patch('/rounds/:roundId/:matchId', roundController.updateMatchTeams);
 
 //Practice routes
 router.get('/practice-teams', practiceController.getPracticeTeams);

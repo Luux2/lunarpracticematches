@@ -25,7 +25,8 @@ const EditPracticeTeams = () => {
         const fetchPracticeTeams = async () => {
             try {
                 const response = await PracticeTeamService.getPracticeTeams();
-                setPracticeTeams(response);
+                const sortedTeams = response.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+                setPracticeTeams(sortedTeams);
             } catch (error) {
                 console.error("Error fetching practice teams:", error);
             }
@@ -33,7 +34,8 @@ const EditPracticeTeams = () => {
         const fetchPlayers = async () => {
             try {
                 const response = await PlayerService.getPlayers();
-                setPlayers(response);
+                const sortedPlayers = response.sort((a, b) => a.name.localeCompare(b.name));
+                setPlayers(sortedPlayers);
             } catch (error) {
                 console.error("Error fetching players:", error);
             }

@@ -80,33 +80,6 @@ const postRound = async (req, res) => {
 
 
 
-
-
-const updateMatchResult = async (req, res) => {
-    const { roundId, matchId } = req.params;
-    const { team1, team2, winner } = req.body;
-
-    try {
-        const matchRef = db.ref(`/rounds/${roundId}/${matchId}`);
-        await matchRef.update({
-            team1: {
-                player1: team1.player1,
-                player2: team1.player2,
-            },
-            team2: {
-                player1: team2.player1,
-                player2: team2.player2,
-            },
-            sidesFixed: true,
-        });
-
-        res.json({ message: "Match result updated successfully" });
-    } catch (error) {
-        console.error("Error updating match result:", error);
-        res.status(500).json({ message: "Failed to update match result" });
-    }
-};
-
 const updateMatchTeams = async (req, res) => {
     const { roundId, matchId } = req.params;
     const { team1, team2 } = req.body;
@@ -118,7 +91,7 @@ const updateMatchTeams = async (req, res) => {
     }
 
     try {
-        const matchRef = db.ref(`/rounds/${roundId}/matches/${matchId}`);
+        const matchRef = db.ref(`/rounds/${roundId}/${matchId}`);
 
         await matchRef.update({
             team1,
@@ -138,4 +111,4 @@ const updateMatchTeams = async (req, res) => {
 
 
 
-module.exports = { getRounds, postRound, updateMatchResult, updateMatchTeams };
+module.exports = { getRounds, postRound, updateMatchTeams };

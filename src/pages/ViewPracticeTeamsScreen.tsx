@@ -20,7 +20,8 @@ const ViewPracticeTeamsScreen = () => {
         const fetchPracticeTeams = async () => {
             try {
                 const response = await PracticeTeamService.getPracticeTeams();
-                setPracticeTeams(response);
+                const sortedTeams = response.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+                setPracticeTeams(sortedTeams);
             } catch (error) {
                 console.error("Error fetching practice teams:", error);
             }
@@ -35,18 +36,6 @@ const ViewPracticeTeamsScreen = () => {
         };
         Promise.all([fetchPracticeTeams(), fetchPlayers()]).then(() => setIsLoading(false));
     }, []);
-
-    const toggleDate = (date: string) => {
-        setExpandedDates((prev) => {
-            const updated = new Set(prev);
-            if (updated.has(date)) {
-                updated.delete(date); // Close
-            } else {
-                updated.add(date); // Open
-            }
-            return updated;
-        });
-    };
 
     const getPlayerName = (id: string): string => {
         const player = players.find((p) => p.id === id);
@@ -98,7 +87,6 @@ const ViewPracticeTeamsScreen = () => {
                             <li
                                 key={date}
                                 className="border-b-2 pb-4 my-4"
-                                onClick={() => toggleDate(date)}
                             >
                                 <div className="flex justify-between items-center">
                                     <div className="ml-2 text-lg font-semibold cursor-pointer">{date}</div>
