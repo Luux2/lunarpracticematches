@@ -107,9 +107,10 @@ const EditRounds = () => {
         }
     };
 
-
-
-
+    const courts =
+        [
+            "Bane 8", "Bane 9", "Bane 10", "Bane 11", "Bane 12", "Bane 7"
+        ];
 
 
     if (isLoading) {
@@ -138,14 +139,20 @@ const EditRounds = () => {
                             </div>
                             {expandedRounds[round.id] && (
                                 <ul className="mt-4 px-4">
-                                    {round.matches.map(
-                                        (match) =>
+                                    {round.matches.map((match, index) => {
+                                        const numCourtsInUse = Math.ceil(round.matches.length / 2); // Dynamisk antal baner
+                                        const courtIndex = index % numCourtsInUse; // Gentag baner
+
+                                        return (
                                             match.id && (
                                                 <li
                                                     key={match.id}
                                                     className="mb-4 p-2 border-2 border-[#232e39] rounded-xl cursor-pointer"
                                                     onClick={() => openModal(match, round.id)}
                                                 >
+                                                    <h2 className="text-xl font-semibold text-center mb-2">
+                                                        {courts[courtIndex]} {/* Viser det korrekte banenavn */}
+                                                    </h2>
                                                     <p className="font-semibold">
                                                         {getPlayerName(match.team1.player1)} &{" "}
                                                         {getPlayerName(match.team1.player2)}
@@ -160,7 +167,8 @@ const EditRounds = () => {
                                                     </p>
                                                 </li>
                                             )
-                                    )}
+                                        );
+                                    })}
                                 </ul>
                             )}
                         </li>
@@ -181,13 +189,14 @@ const EditRounds = () => {
                                 value={selectedMatch.team1.player1}
                                 onChange={(value) => handlePlayerChange("team1", 1, value)}
                             >
-                                {({ open }) => (
+                                {({open}) => (
                                     <div className="relative">
                                         <ListboxButton className="w-full p-2 border rounded bg-white text-left">
                                             {getPlayerName(selectedMatch.team1.player1)}
                                         </ListboxButton>
                                         {open && (
-                                            <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto bg-white border rounded shadow-lg">
+                                            <ListboxOptions
+                                                className="absolute z-10 mt-1 max-h-60 w-full overflow-auto bg-white border rounded shadow-lg">
                                                 {players.map((player) => (
                                                     <ListboxOption
                                                         key={player.id}

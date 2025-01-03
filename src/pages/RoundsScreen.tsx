@@ -15,7 +15,6 @@ const RoundsScreen = () => {
         const fetchRounds = async () => {
             const response = await RoundService.getRounds();
 
-
             // Filtrer runder fra i dag eller frem
             const today = new Date();
             const filteredRounds = response.filter((round) =>
@@ -45,6 +44,8 @@ const RoundsScreen = () => {
         return player ? player.name : "Ukendt spiller";
     };
 
+    const courts = ["Bane 8", "Bane 9", "Bane 10", "Bane 11", "Bane 12", "Bane 7"];
+
     if (isLoading) {
         return <p className="text-center mt-10">Indlæser runder...</p>;
     }
@@ -65,26 +66,35 @@ const RoundsScreen = () => {
                             <h1 className="ml-4 italic">Første navn angivet: Venstre side</h1>
                             <h1 className="ml-4 italic">Andet navn angivet: Højre side</h1>
                             <ul className="mt-4 px-4">
-                                {round.matches.map(
-                                    (match) =>
+                                {round.matches.map((match, index) => {
+                                    const numCourtsInUse = Math.ceil(round.matches.length / 2); // Dynamisk antal baner
+                                    const courtIndex = index % numCourtsInUse; // Gentag baner
+
+                                    return (
                                         match.id && (
                                             <li
                                                 key={match.id}
                                                 className="mb-4 p-2 border-2 border-[#232e39] rounded-xl"
                                             >
+                                                <h2 className="text-xl font-semibold text-center mb-2">
+                                                    {courts[courtIndex]} {/* Dynamisk banenavn */}
+                                                </h2>
                                                 <p className="font-semibold">
-                                                    {getPlayerName(match.team1.player1)} & {" "}
+                                                    {getPlayerName(match.team1.player1)} &{" "}
                                                     {getPlayerName(match.team1.player2)}
                                                 </p>
                                                 <p>vs</p>
                                                 <p className="font-semibold">
-                                                    {getPlayerName(match.team2.player1)} & {" "}
+                                                    {getPlayerName(match.team2.player1)} &{" "}
                                                     {getPlayerName(match.team2.player2)}
                                                 </p>
-                                                <p className="mt-2 italic">{!match.sidesFixed ? "Sider ikke fastlåst" : ""}</p>
+                                                <p className="mt-2 italic">
+                                                    {!match.sidesFixed ? "Sider ikke fastlåst" : ""}
+                                                </p>
                                             </li>
                                         )
-                                )}
+                                    );
+                                })}
                             </ul>
                         </li>
                     ))}
