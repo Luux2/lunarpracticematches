@@ -45,6 +45,7 @@ const ViewPracticeTeamsScreen = () => {
     const groupedTeams = useMemo(() => {
         const teamsArray = Object.values(practiceTeams); // Konverter objektet til en array
         const today = new Date(); // Dagens dato
+        today.setHours(0, 0, 0, 0);
         return teamsArray
             .filter((team) => new Date(team.startTime) >= today) // Frasorter hold før i dag
             .reduce((acc, team) => {

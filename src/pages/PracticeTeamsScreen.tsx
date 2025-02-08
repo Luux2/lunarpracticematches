@@ -48,7 +48,7 @@ const PracticeTeamsScreen = () => {
 
             // Formatter datoen her, kun når den skal bruges
             const startTime = formatLocalISOString(selectedDate!);
-            const endTime = formatLocalISOString(new Date(selectedDate!.getTime() + 60 * 60 * 1000));
+            const endTime = formatLocalISOString(new Date(selectedDate!.getTime() + 40 * 60 * 1000));
 
             const newPracticeTeam = {
                 startTime,
@@ -86,7 +86,7 @@ const PracticeTeamsScreen = () => {
                         showTimeSelect
                         locale="da"
                         timeFormat="HH:mm"
-                        timeIntervals={30}
+                        timeIntervals={10}
                         showWeekNumbers
                         placeholderText="Tryk på mig!"
                         minDate={new Date()}
