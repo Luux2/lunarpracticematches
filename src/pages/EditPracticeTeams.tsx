@@ -158,7 +158,7 @@ const EditPracticeTeams = () => {
                                             <li key={`${date}-${team.id}`} className="mb-4">
                                                 <div className="font-semibold mb-3 border-t">
                                                     <p className="p-2">
-                                                        {format(team.startTime, "HH:mm")} - {format(team.endTime, "HH:mm")}
+                                                        {format(team.startTime, "HH:mm")}
                                                     </p>
                                                 </div>
                                                 <ul>

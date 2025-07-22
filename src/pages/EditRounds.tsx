@@ -76,7 +76,7 @@ const EditRounds = () => {
 
 
     const saveChanges = () => {
-        if (selectedMatch) {
+       /* if (selectedMatch) {
             const { roundId, id: matchId, team1, team2 } = selectedMatch;
 
             if (!roundId || !matchId) {
@@ -105,7 +105,7 @@ const EditRounds = () => {
                 );
                 closeModal();
             });
-        }
+        }*/
     };
 
     const courts =
