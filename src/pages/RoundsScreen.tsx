@@ -77,7 +77,7 @@ const RoundsScreen = () => {
                                                 className="mb-4 p-2 border-2 border-[#232e39] rounded-xl"
                                             >
                                                 <h2 className="text-xl font-semibold text-center mb-2">
-                                                    {courts[courtIndex]} {/* Dynamisk banenavn */}
+                                                    {match.court || courts[courtIndex]}
                                                 </h2>
                                                 <p className="font-semibold">
                                                     {getPlayerName(match.team1.player1)} &{" "}

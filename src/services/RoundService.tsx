@@ -17,6 +17,7 @@ class RoundService {
                 ...match.team2,
             },
             sidesFixed: match.sidesFixed || false,
+            court: match.court || null,
         }));
 
         await apiClient.post(`/rounds/${date}`, { matches: formattedMatches });

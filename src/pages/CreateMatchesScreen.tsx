@@ -20,6 +20,7 @@ const CreateMatchesScreen = () => {
     const [selectedPlayers, setSelectedPlayers] = useState<(PlayerInterface | null)[]>(Array(numPlayers).fill(null));
     const today = format(new Date().toISOString().split("T")[0], "dd-MM-yyyy");
     const [sidesNotFixedMap, setSidesNotFixedMap] = useState<Record<number, boolean>>({});
+    const [selectedCourts, setSelectedCourts] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -44,6 +45,12 @@ const CreateMatchesScreen = () => {
         }));
     };
 
+    const handleCourtChange = (matchIndex: number, court: string) => {
+        setSelectedCourts((prev) => ({
+            ...prev, [matchIndex]: court
+        }))
+    };
+
     const handleConfirmMatches = async () => {
         if (selectedPlayers.some((player) => !player)) {
             alert("Alle spillere skal vælges!");
@@ -51,7 +58,10 @@ const CreateMatchesScreen = () => {
         }
 
         const matches: MatchInterface[] = Array.from({ length: numMatches }).map((_, matchIndex) => {
-            const sidesNotFixed = sidesNotFixedMap[matchIndex]; // Tjek om sider ikke er fastlagt
+            const sidesNotFixed = sidesNotFixedMap[matchIndex];
+            const courtIndex = matchIndex % Math.ceil(numMatches / 2);
+            const defaultCourt = courts[courtIndex];
+
 
             const team1: TeamInterface = {
                 player1: selectedPlayers[matchIndex * 4]!.id as string,
@@ -67,6 +77,7 @@ const CreateMatchesScreen = () => {
                 team1,
                 team2,
                 sidesFixed: !sidesNotFixed,
+                court: selectedCourts[matchIndex] || defaultCourt,
             };
         });
 
@@ -89,7 +100,7 @@ const CreateMatchesScreen = () => {
 
     const courts =
         [
-            "Bane 8", "Bane 9", "Bane 10", "Bane 11", "Bane 12", "Bane 7"
+            "Bane 8", "Bane 9", "Bane 10", "Bane 11", "Bane 12", "Bane 3", "Bane 4", "Bane 7", "Bane 1", "Bane 2", "Bane 13", "Bane 15", "Bane 16"
         ];
 
     if (isLoading) {
@@ -113,13 +124,26 @@ const CreateMatchesScreen = () => {
 
             {Array.from({ length: numMatches }).map((_, groupIndex) => {
                 const numCourtsInUse = Math.ceil(numMatches / 2); // Dynamisk antal baner
-                const courtIndex = groupIndex % numCourtsInUse; // Gentag baner efter behov
+                const courtIndex = groupIndex % numCourtsInUse;
 
                 return (
                     <div key={groupIndex} className="mb-10">
-                        <h2 className="text-2xl font-semibold text-center mb-4">
-                            {courts[courtIndex]}
-                        </h2>
+                        <div className="flex justify-center">
+                            <select
+                                value={selectedCourts[groupIndex] || courts[courtIndex]}
+                                onChange={(e) => handleCourtChange(groupIndex, e.target.value)}
+                                name="courts"
+                                className="text-2xl font-semibold text-center mb-4 rounded-xl ml-2"
+                            >
+                                {[...new Set([courts[courtIndex], ...courts])].map((court, index) => (
+                                    <option key={index} value={court}>
+                                        {court}
+                                    </option>
+                                ))}
+                            </select>
+
+
+                        </div>
                         <div className="grid grid-cols-2 gap-4 mx-1">
                             <h1 className="text-center font-semibold">Venstre side</h1>
                             <h1 className="text-center font-semibold">Højre side</h1>

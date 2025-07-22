@@ -19,7 +19,8 @@ const EditRounds = () => {
     useEffect(() => {
         const fetchRounds = async () => {
             const response = await RoundService.getRounds();
-            setRounds(response);
+            const sortedRounds = response.sort((a, b) => parse(b.id, "dd-MM-yyyy", new Date()).getTime() - parse(a.id, "dd-MM-yyyy", new Date()).getTime());
+            setRounds(sortedRounds);
         };
 
         const fetchPlayers = async () => {

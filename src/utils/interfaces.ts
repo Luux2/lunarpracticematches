@@ -14,6 +14,7 @@ export interface MatchInterface {
     team1: TeamInterface;
     team2: TeamInterface;
     sidesFixed?: boolean
+    court: string;
 }
 
 export interface RoundInterface {
@@ -24,6 +25,11 @@ export interface RoundInterface {
 export interface PracticeTeamInterface {
     id?: string;
     startTime: string;
-    endTime: string;
+    players: string[];
+}
+
+export interface SmashTeamInterface {
+    id?: string;
+    name: string;
     players: string[];
 }

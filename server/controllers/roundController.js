@@ -21,6 +21,7 @@ const getRounds = async (req, res) => {
                             player2: data[key][matchKey].team2.player2,
                         },
                         sidesFixed: data[key][matchKey].sidesFixed || false,
+                        court: data[key][matchKey].court || null,
                     })),
                 }))
                 : [];
@@ -66,6 +67,7 @@ const postRound = async (req, res) => {
                 player2: match.team2.player2,
             }),
             sidesFixed: match.sidesFixed || false,
+            court: match.court || null,
         }));
 
         const promises = formattedMatches.map(match => roundRef.push(match));

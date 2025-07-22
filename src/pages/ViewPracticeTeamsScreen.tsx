@@ -1,8 +1,7 @@
 import {useEffect, useMemo, useState} from "react";
-import {PlayerInterface, PracticeTeamInterface} from "../utils/interfaces.ts";
+import {PracticeTeamInterface} from "../utils/interfaces.ts";
 import PracticeTeamService from "../services/PracticeTeamService.tsx";
 import BackArrow from "../components/BackArrow.tsx";
-import PlayerService from "../services/PlayerService.tsx";
 import {ChevronRightIcon} from "@heroicons/react/24/outline";
 import {format, parse} from "date-fns";
 import {da} from "date-fns/locale";
@@ -12,7 +11,6 @@ registerLocale("da", da);
 
 const ViewPracticeTeamsScreen = () => {
     const [practiceTeams, setPracticeTeams] = useState<PracticeTeamInterface[]>([]);
-    const [players, setPlayers] = useState<PlayerInterface[]>([]);
     const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
     const [isLoading, setIsLoading] = useState(true);
 
@@ -26,21 +24,8 @@ const ViewPracticeTeamsScreen = () => {
                 console.error("Error fetching practice teams:", error);
             }
         };
-        const fetchPlayers = async () => {
-            try {
-                const response = await PlayerService.getPlayers();
-                setPlayers(response);
-            } catch (error) {
-                console.error("Error fetching players:", error);
-            }
-        };
-        Promise.all([fetchPracticeTeams(), fetchPlayers()]).then(() => setIsLoading(false));
+        Promise.all([fetchPracticeTeams()]).then(() => setIsLoading(false));
     }, []);
-
-    const getPlayerName = (id: string): string => {
-        const player = players.find((p) => p.id === id);
-        return player ? player.name : "Ukendt spiller";
-    };
 
     const groupedTeams = useMemo(() => {
         const teamsArray = Object.values(practiceTeams); // Konverter objektet til en array
@@ -101,18 +86,13 @@ const ViewPracticeTeamsScreen = () => {
                                     <ul className="mt-4 border-gray-300">
                                         {groupedTeams[date].map((team) => (
                                             <li key={`${date}-${team.id}`} className="mb-4">
-                                                <div className="font-semibold mb-3 border-t">
-                                                    <p className="p-2">
-                                                        {format(team.startTime, "HH:mm")} - {format(team.endTime, "HH:mm")}
-                                                    </p>
-                                                </div>
                                                 <ul>
-                                                    {team.players.map((playerId) => (
+                                                    {team.players.map((player) => (
                                                         <li
-                                                            key={playerId}
+                                                            key={player}
                                                             className="mb-2 p-2 mx-1 cursor-pointer hover:bg-gray-700 border-2 border-[#232e39] rounded-xl"
                                                         >
-                                                            {getPlayerName(playerId)}
+                                                            {player}
                                                         </li>
                                                     ))}
                                                 </ul>

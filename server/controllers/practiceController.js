@@ -24,22 +24,21 @@ const getPracticeTeams = async (req, res) => {
 
 
 const postPracticeTeam = async (req, res) => {
-    const { startTime, endTime, players } = req.body;
+    const { startTime, players } = req.body;
 
     // Valider input
-    if (!startTime || !endTime || !players || players.length !== 4) {
-        return res.status(400).json({ message: "Invalid input. Ensure startTime, endTime, and exactly 4 players are provided." });
+    if (!startTime || !players || players.length !== 8) {
+        return res.status(400).json({ message: "Invalid input. Ensure startTime, and exactly 8 players are provided." });
     }
 
     try {
-        // Reference til "practice-teams" i databasen
+
         const practiceTeamsRef = db.ref('/practice-teams');
 
         // Push en ny træning ind i databasen
         const newPracticeTeamRef = practiceTeamsRef.push();
         await newPracticeTeamRef.set({
             startTime,
-            endTime,
             players,
         });
 
