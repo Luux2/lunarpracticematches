@@ -3,6 +3,6 @@
         "node_modules{,/**}",
         ".vscode{,/**}"
     ],
-    "appService.defaultWebAppToDeploy": "/subscriptions/f8f6c166-aebf-4d59-876a-047d32e534c1/resourceGroups/api/providers/Microsoft.Web/sites/lunarsmashunited-api",
+    "appService.defaultWebAppToDeploy": "/subscriptions/36cc10dc-323a-4b98-97ba-64f023a740e4/resourceGroups/api/providers/Microsoft.Web/sites/smashlunar-api",
     "appService.deploySubpath": "."
 }
