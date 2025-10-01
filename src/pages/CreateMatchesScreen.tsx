@@ -111,7 +111,7 @@ const CreateMatchesScreen = () => {
         <>
             <BackArrow />
             <div className="flex justify-center space-x-4 mb-10 mt-4">
-                { [8, 12, 16, 20, 24].map((num) => (
+                { [8, 12, 16, 20, 24, 28].map((num) => (
                     <button
                         key={num}
                         className={`rounded-xl border-2 border-[#232E39] p-2 ${numPlayers === num ? "bg-sky-400" : ""}`}
